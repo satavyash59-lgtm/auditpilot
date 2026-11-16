@@ -218,7 +218,7 @@ trial_balance = pd.DataFrame({
         "Revenue", "Expenses"
     ],
     "debit_inr": [total // 2, 0, 0, 0, total - total // 2],
-    "credit_inr": [0, total // 4, total // 4, total // 2, 0]
+    "credit_inr": [0, total // 4, total // 4, total - 2 * (total // 4), 0]
 })
 
 # Plant one trial balance gap.

@@ -2,5 +2,5 @@ account_code,account_name,debit_inr,credit_inr
 1001,Cash,152407553,0
 2001,Accounts Payable,0,76078776
 3001,Capital,0,76078776
-4001,Revenue,0,152157553
+4001,Revenue,0,152157554
 5001,Expenses,152157553,0
