@@ -53,11 +53,19 @@ accounts = [
 dates = pd.date_range("2025-04-01", "2026-03-31")
 
 account_choices = rng.integers(0, len(accounts), 5990)
+
+# Ensure normal transactions have different posters and approvers.
+posted_indices = rng.integers(0, len(employees), 5990)
+approval_offsets = rng.integers(1, len(employees), 5990)
+approved_indices = (
+    posted_indices + approval_offsets
+) % len(employees)
+
 ledger = pd.DataFrame({
     "entry_id": [f"TXN{i:06d}" for i in range(1, 5991)],
     "date": rng.choice(dates, 5990),
-    "posted_by": rng.choice(employees["employee_id"], 5990),
-    "approved_by": rng.choice(employees["employee_id"], 5990),
+    "posted_by": employees["employee_id"].to_numpy()[posted_indices],
+    "approved_by": employees["employee_id"].to_numpy()[approved_indices],
     "account_code": [accounts[i][0] for i in account_choices],
     "account_name": [accounts[i][1] for i in account_choices],
     "vendor_id": rng.choice(vendors["vendor_id"], 5990),
@@ -80,11 +88,13 @@ ground_truth = []
 available = list(rng.permutation(len(ledger)))
 position = 0
 
+
 def get_rows(count):
     global position
     selected = available[position:position + count]
     position += count
     return selected
+
 
 # -------------------------------
 # 4. Duplicate payments: 10 pairs
@@ -97,13 +107,16 @@ for idx in duplicate_rows:
     original = ledger.loc[idx].copy()
     duplicate = original.copy()
 
-    duplicate["entry_id"] = f"TXN{len(ledger) + len(duplicates) + 1:06d}"
+    duplicate["entry_id"] = (
+        f"TXN{len(ledger) + len(duplicates) + 1:06d}"
+    )
     duplicates.append(duplicate)
 
     ground_truth.append({
         "entry_id": original["entry_id"],
         "anomaly_type": "duplicate_payment"
     })
+
     ground_truth.append({
         "entry_id": duplicate["entry_id"],
         "anomaly_type": "duplicate_payment"
@@ -122,10 +135,16 @@ for group in range(6):
     rows = get_rows(3)
     vendor = f"VEN{group + 10:03d}"
 
+    # All three payments in a group share the same date.
+    group_date = pd.Timestamp("2025-04-01") + pd.Timedelta(days=group)
+
     for idx in rows:
         ledger.loc[idx, "vendor_id"] = vendor
+        ledger.loc[idx, "date"] = group_date
         ledger.loc[idx, "amount_inr"] = 49000
-        ledger.loc[idx, "description"] = f"Consulting payment group {group + 1}"
+        ledger.loc[idx, "description"] = (
+            f"Consulting payment group {group + 1}"
+        )
 
         ground_truth.append({
             "entry_id": ledger.loc[idx, "entry_id"],
@@ -217,8 +236,13 @@ trial_balance = pd.DataFrame({
         "Cash", "Accounts Payable", "Capital",
         "Revenue", "Expenses"
     ],
-    "debit_inr": [total // 2, 0, 0, 0, total - total // 2],
-    "credit_inr": [0, total // 4, total // 4, total - 2 * (total // 4), 0]
+    "debit_inr": [
+        total // 2, 0, 0, 0, total - total // 2
+    ],
+    "credit_inr": [
+        0, total // 4, total // 4,
+        total - 2 * (total // 4), 0
+    ]
 })
 
 # Plant one trial balance gap.
