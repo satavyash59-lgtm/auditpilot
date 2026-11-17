@@ -1,8 +1,3 @@
-from google.adk.agents.llm_agent import Agent
+from auditpilot.agents.intake import intake_agent
 
-root_agent = Agent(
-    model='<FILL_IN_MODEL>',
-    name='root_agent',
-    description='A helpful assistant for user questions.',
-    instruction='Answer user questions to the best of your knowledge',
-)
+root_agent = intake_agent
