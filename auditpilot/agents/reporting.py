@@ -1,7 +1,7 @@
 from google.adk.agents.llm_agent import Agent
 
 reporting_agent = Agent(
-    model="gemini-3.8-flash",
+    model="gemini-3.5-flash-lite",
     name="reporting_agent",
     description="Generates the final AuditPilot audit report.",
     instruction="""

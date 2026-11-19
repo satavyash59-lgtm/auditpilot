@@ -3,7 +3,7 @@ from google.adk.agents.llm_agent import Agent
 from auditpilot.tools.data_tools import vendor_bank_overlap
 
 vendor_agent = Agent(
-    model="gemini-3.8-flash",
+    model="gemini-3.5-flash-lite",
     name="vendor_agent",
     description="Identifies vendor and employee banking overlaps.",
     instruction="""

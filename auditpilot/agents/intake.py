@@ -6,7 +6,7 @@ from auditpilot.tools.data_tools import (
 )
 
 intake_agent = Agent(
-    model="gemini-3.8-flash",
+    model="gemini-3.5-flash-lite",
     name="intake_agent",
     description="Validates financial audit data before analysis.",
     instruction="""

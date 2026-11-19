@@ -9,7 +9,7 @@ from auditpilot.tools.data_tools import (
 )
 
 anomaly_agent = Agent(
-    model="gemini-3.8-flash",
+    model="gemini-3.5-flash-lite",
     name="anomaly_agent",
     description="Detects unusual financial transactions.",
     instruction="""

@@ -3,7 +3,7 @@ from google.adk.agents.llm_agent import Agent
 from auditpilot.tools.audit_tools import run_specialist_checks
 
 specialist_agent = Agent(
-    model="gemini-3.8-flash",
+    model="gemini-3.5-flash-lite",
     name="specialist_agent",
     description="Runs anomaly, vendor and financial ratio analysis.",
     instruction="""
